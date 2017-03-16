@@ -1,0 +1,22 @@
+{
+    "name": "math-calc",
+    "version": "0.1.1",
+    "description": "Postcss-calc",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": {
+        "name": "Lore-w",
+        "email": "metro-cpu@hotmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:lore-w/math-calc.git"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "lodash": "^4.17.4",
+        "postcss": "^5.2.16"
+    }
+}
