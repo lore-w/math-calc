@@ -14,6 +14,20 @@
         "type": "git",
         "url": "git@github.com:lore-w/math-calc.git"
     },
+    "keywords": [
+        "postcss-plugin",
+        "postcss-math-calc",
+        "postcss-calc",
+        "postcss-math",
+        "calc",
+        "math",
+        "css",
+        "+",
+        "-",
+        "*",
+        "/",
+        "%"
+    ],
     "license": "ISC",
     "dependencies": {
         "lodash": "^4.17.4",
