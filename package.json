@@ -1,7 +1,7 @@
 {
     "name": "math-calc",
-    "version": "1.0.0",
-    "description": "Postcss-calc",
+    "version": "1.0.11",
+    "description": "math-calc is a simpleset and fast postcss plugin allows you write +、-、*、/、% in your css",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"

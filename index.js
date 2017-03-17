@@ -7,7 +7,6 @@
 "use strict";
 
 let postcss = require('postcss'),
-    gutil = require('gulp-util'),
     _ = require('lodash');
 
 module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
