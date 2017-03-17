@@ -31,12 +31,11 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
 
         function errMessage(message) {
 
-            throw new gutil.PluginError("math-calc", message);
-            return;
+            throw decl.error(message, { plugin: 'math-calc' });
         }
 
-        let regExp = /\d+[a-zA-Z]+\s*[-+*/%]\s*\d+[a-zA-Z]*/gi,
-            regFirstExp = /\d+[a-zA-Z]+\s*[-+*/%]\s*\d+[a-zA-Z]*/i,
+        let regExp = /-?\d+[a-zA-Z]*\s*[-+*/%]\s*-?\d+[a-zA-Z]*/gi,
+            regFirstExp = /-?\d+[a-zA-Z]*\s*[-+*/%]\s*-?\d+[a-zA-Z]*/i,
             regOperator = /[-+*/%]/,
             reg = /(\d+)([a-zA-Z]*)/;
 
@@ -72,21 +71,21 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
 
                             case '+':
                                 if (!isUnitEq(unitL, unitR)) {
-                                    errMessage('The unit is not the same');
+                                    errMessage('+ operation must have the same unit');
                                 } else {
                                     declValue = declValue.replace(regFirstExp, setValueUnit(valueL + valueR, unit));
                                 }
                                 break;
                             case '-':
                                 if (!isUnitEq(unitL, unitR)) {
-                                    errMessage('The unit is not the same');
+                                    errMessage('— operation must have the same unit');
                                 } else {
                                     declValue = declValue.replace(regFirstExp, setValueUnit(valueL - valueR, unit));
                                 }
                                 break;
                             case '*':
                                 if (unitRepeat(unitL, unitR)) {
-                                    errMessage('Unit error');
+                                    errMessage('* operation must have a const');
                                 } else {
                                     declValue = declValue.replace(regFirstExp, setValueUnit(valueL * valueR, unit));
                                 }
@@ -94,10 +93,10 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
                             case '/':
                                 if (unitRepeat(unitL, unitR)) {
 
-                                    errMessage('Unit error');
+                                    errMessage('/ operation must have a const');
                                 } else if (valueR === 0) {
 
-                                    errMessage('Zero divisor');
+                                    errMessage('Zero cant not be a  divisor');
                                 } else {
 
                                     declValue = declValue.replace(regFirstExp, setValueUnit(_.round(valueL / valueR, 3), unit));
@@ -105,7 +104,7 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
                                 break;
                             case '%':
                                 if (unitRepeat(unitL, unitR)) {
-                                    errMessage('Unit error');
+                                    errMessage('% operation must have a const');
                                 } else {
                                     declValue = declValue.replace(regFirstExp, setValueUnit(valueL % valueR, unit));
                                 }

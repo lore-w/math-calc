@@ -1,4 +1,7 @@
-## Postcss-math-calc
+## math-calc
+
+math-calc is a simpleset and fast postcss plugin allows you write `+` `-` `*` `/` `%` in your css
+
 
 ### Usage
 
@@ -16,19 +19,24 @@ gulp.task('css', function() {
 });
 ```
 
-### Example
-+ `width: 2px + 3px` 对
-+ `width: 2px+3px` 对
-+ `width: 2px     +3px` 对
-+ `width: 2px+3` 错
-+ `width: 2px*3` 对
-+ `width: 2px*3px` 错
-+ `width: 2px/3` 对
-+ `width: 2px%3` 对
-+ ()//TODO
-
-### Tips
-如果css中定义了变量，确保使用改模块前已经有其他模块对变量进行转换
+### Input
+```css
+#demo {
+    width: 100px + 100px;
+    height: 200px * 2;
+    border: 2 / 2px solid #fafafa;
+    margin: 10px + 2px 3 * 2px 5 % 2px 20px - 10px;
+}
+```
+### Output
+```css
+#demo {
+    width: 200px;
+    height: 400px;
+    border: 1px solid #fafafa;
+    margin: 12px 6px 1px 10px;
+}
+```
 
 ## LICENSE
 

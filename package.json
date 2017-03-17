@@ -1,6 +1,6 @@
 {
     "name": "math-calc",
-    "version": "0.1.1",
+    "version": "1.0.0",
     "description": "Postcss-calc",
     "main": "index.js",
     "scripts": {
