@@ -33,9 +33,9 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
             throw decl.error(message, { plugin: 'math-calc' });
         }
 
-        let regExp = /-?\d+[PX]{0,2}\s*[-+*/%]\s*-?\d+[PX]{0,2}/gi,
-            regFirstExp = /-?\d+[PX]{0,2}\s*[-+*/%]\s*-?\d+[PX]{0,2}/i,
-            regOperator = /[-+*/%]/,
+        let regExp = /-?\d+[PX]{0,2}\s*[-+*/]\s*-?\d+[PX]{0,2}/gi,
+            regFirstExp = /-?\d+[PX]{0,2}\s*[-+*/]\s*-?\d+[PX]{0,2}/i,
+            regOperator = /[-+*/]/,
             reg = /(\d+)([a-zA-Z]*)/;
 
         css.walkRules(function(rule) {
