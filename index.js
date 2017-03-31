@@ -13,101 +13,58 @@ module.exports = postcss.plugin('mathCalc', function mathCalc(options) {
 
     return function(css) {
 
-        function isUnitEq (v1, v2) {
-
-            return v1 === v2;
-        }
-
-        function unitRepeat (v1, v2) {
-
-            return v1 && v2;
-        }
-
-        function setValueUnit (val, unit) {
-
-            return val === 0 ? 0 : val + unit;
-        }
-
         function errMessage(decl, message) {
 
             throw decl.error(message, { plugin: 'math-calc' });
         }
 
-        let regExp = /-?\d+[PX]{0,2}\s*[-+*/]\s*-?\d+[PX]{0,2}/gi,
-            regFirstExp = /-?\d+[PX]{0,2}\s*[-+*/]\s*-?\d+[PX]{0,2}/i,
-            regOperator = /[-+*/]/,
-            reg = /(\d+)([a-zA-Z]*)/;
+        let expReg = /[-+.]?[\d.]+[A-Z%]{0,3}\s*[-+*/]\s*[-+.]?[\d.]+[A-Z%]{0,3}/gi,
+            expFirstReg = /[-+.]?[\d.]+[A-Z%]{0,3}\s*[-+*/]\s*[-+.]?[\d.]+[A-Z%]{0,3}/i,
+            unitReg = /[A-Z%]{1,3}/gi;
 
         css.walkRules(function(rule) {
 
             rule.walkDecls(function(decl, i) {
 
-                let matchArr = decl.value.match(regExp),
+                let matchArr = decl.value.match(expReg),
                     declValue,
-                    operator,
-                    value,
-                    valueL,
-                    valueR,
-                    unit,
-                    unitL,
-                    unitR
+                    unitArr,
+                    exp;
 
-                if (!_.isNull(matchArr)) {
+                // length < 200 排除base64等其它情况
+                if (!_.isNull(matchArr) && decl.value.length < 200) {
 
                     declValue = decl.value;
 
                     _.forEach(matchArr, function(val, index) {
 
-                        operator = val.match(regOperator)[0];
-                        value = val.split(operator);
-                        valueL = _.trim(value[0]).match(reg)[1] * 1;
-                        valueR = _.trim(value[1]).match(reg)[1] * 1;
-                        unitL = _.trim(value[0]).match(reg)[2];
-                        unitR = _.trim(value[1]).match(reg)[2];
-                        unit = unitL || unitR;
+                        if (val.indexOf('++') > 0 || val.indexOf('--') > 0) {
 
-                        switch (operator) {
+                            errMessage(decl, 'SYNTAX ERROR');
 
-                            case '+':
-                                if (!isUnitEq(unitL, unitR)) {
-                                    errMessage(decl, '+ operation must have the same unit');
-                                } else {
-                                    declValue = declValue.replace(regFirstExp, setValueUnit(valueL + valueR, unit));
-                                }
-                                break;
-                            case '-':
-                                if (!isUnitEq(unitL, unitR)) {
-                                    errMessage(decl, '— operation must have the same unit');
-                                } else {
-                                    declValue = declValue.replace(regFirstExp, setValueUnit(valueL - valueR, unit));
-                                }
-                                break;
-                            case '*':
-                                if (unitRepeat(unitL, unitR)) {
-                                    errMessage(decl, '* operation must have a const');
-                                } else {
-                                    declValue = declValue.replace(regFirstExp, setValueUnit(valueL * valueR, unit));
-                                }
-                                break;
-                            case '/':
-                                if (unitRepeat(unitL, unitR)) {
+                            return;
+                        }
 
-                                    errMessage(decl, '/ operation must have a const');
-                                } else if (valueR === 0) {
+                        unitArr = _.uniq(val.match(unitReg));
 
-                                    errMessage(decl, 'Zero cant not be a  divisor');
-                                } else {
+                        if (unitArr.length > 1) {
 
-                                    declValue = declValue.replace(regFirstExp, setValueUnit(_.round(valueL / valueR, 3), unit));
-                                }
-                                break;
-                            case '%':
-                                if (unitRepeat(unitL, unitR)) {
-                                    errMessage(decl, '% operation must have a const');
-                                } else {
-                                    declValue = declValue.replace(regFirstExp, setValueUnit(valueL % valueR, unit));
-                                }
-                                break;
+                            errMessage(decl, 'UNIT ERROR');
+
+                            return;
+                        }
+
+                        exp = val.replace(unitReg, '');
+
+                        try {
+
+                            declValue = declValue.replace(expFirstReg, eval(exp) + unitArr[0]);
+                        }
+                        catch (err) {
+
+                            errMessage(decl, 'SYNTAX ERROR');
+
+                            return;
                         }
                     });
                     decl.value = declValue;
